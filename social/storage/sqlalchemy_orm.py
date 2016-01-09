@@ -50,12 +50,13 @@ class SQLAlchemyMixin(object):
     def _flush(cls):
         try:
             cls._session().flush()
-        except AssertionError:
             if transaction:
                 with transaction.manager as manager:
                     manager.commit()
             else:
                 cls._session().commit()
+        except AssertionError:
+            pass
 
     def save(self):
         self._save_instance(self)
